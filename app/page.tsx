@@ -29,6 +29,7 @@ import {
   PaginationEllipsis,
 } from '@/components/ui/pagination';
 import { Shirt, ArrowRight, Sparkles } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 
@@ -86,20 +87,23 @@ export default function Home() {
   } = useRecommendations(recommendationRequest);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="bg-secondary-background border-b-2 border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary rounded-lg">
-              <Shirt className="h-6 w-6 text-primary-foreground" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-main border-2 border-border rounded-base shadow-shadow">
+                <Shirt className="h-6 w-6 text-main-foreground" />
+              </div>
+              <div>
+                <h1 className="text-xl font-heading">Outfit Recommender</h1>
+                <p className="text-xs text-muted-foreground">
+                  AI-powered outfit suggestions
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold">Outfit Recommender</h1>
-              <p className="text-xs text-muted-foreground">
-                AI-powered outfit suggestions
-              </p>
-            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -112,7 +116,7 @@ export default function Home() {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold">Select a Product</h2>
+                  <h2 className="text-2xl font-heading">Select a Product</h2>
                   <p className="text-muted-foreground">
                     Choose a base product to build your outfit around
                   </p>
@@ -253,18 +257,18 @@ export default function Home() {
             {selectedProduct && (
               <section className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <h2 className="text-2xl font-bold">Outfit Recommendations</h2>
+                  <h2 className="text-2xl font-heading">Outfit Recommendations</h2>
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                  <Badge variant="secondary" className="text-sm">
+                  <Badge variant="neutral" className="text-sm">
                     Based on: {selectedProduct.title.slice(0, 30)}...
                   </Badge>
                 </div>
 
                 {/* Selected Product Preview */}
-                <div className="bg-white rounded-lg p-4 border">
+                <div className="bg-secondary-background rounded-base p-4 border-2 border-border shadow-shadow">
                   <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="h-4 w-4 text-yellow-500" />
-                    <span className="text-sm font-medium">Selected Base Product</span>
+                    <Sparkles className="h-4 w-4 text-main" />
+                    <span className="text-sm font-heading">Selected Base Product</span>
                   </div>
                   <div className="flex gap-4 items-start">
                     <div className="w-24 shrink-0">
@@ -274,18 +278,18 @@ export default function Home() {
                       />
                     </div>
                     <div>
-                      <h3 className="font-semibold">{selectedProduct.title}</h3>
+                      <h3 className="font-heading">{selectedProduct.title}</h3>
                       <p className="text-sm text-muted-foreground capitalize">
                         {selectedProduct.brand} • {selectedProduct.style}
                       </p>
-                      <p className="text-lg font-bold mt-1">
+                      <p className="text-lg font-heading mt-1">
                         ₹{selectedProduct.price.toLocaleString('en-IN')}
                       </p>
                       <div className="flex gap-1 mt-2">
                         {selectedProduct.colors.map((color) => (
                           <Badge
                             key={color}
-                            variant="outline"
+                            variant="neutral"
                             className="text-xs capitalize"
                           >
                             {color}
@@ -294,7 +298,7 @@ export default function Home() {
                       </div>
                     </div>
                     <Button
-                      variant="outline"
+                      variant="neutral"
                       size="sm"
                       className="ml-auto"
                       onClick={() => setSelectedProduct(null)}
@@ -306,9 +310,9 @@ export default function Home() {
 
                 {/* Outfit Recommendations */}
                 {outfitsError ? (
-                  <div className="text-center py-12 text-red-500">
-                    <p>Error loading recommendations</p>
-                    <p className="text-sm">{outfitsError.message}</p>
+                  <div className="text-center py-12 bg-secondary-background border-2 border-border rounded-base">
+                    <p className="text-red-600 font-heading">Error loading recommendations</p>
+                    <p className="text-sm text-muted-foreground">{outfitsError.message}</p>
                   </div>
                 ) : (
                   <OutfitDisplay
@@ -321,9 +325,9 @@ export default function Home() {
             )}
 
             {!selectedProduct && (
-              <div className="text-center py-16 bg-white rounded-lg border">
+              <div className="text-center py-16 bg-secondary-background rounded-base border-2 border-border shadow-shadow">
                 <Shirt className="h-16 w-16 mx-auto text-muted-foreground/50" />
-                <h3 className="text-xl font-semibold mt-4">
+                <h3 className="text-xl font-heading mt-4">
                   Select a Product to Get Started
                 </h3>
                 <p className="text-muted-foreground mt-2 max-w-md mx-auto">
@@ -343,23 +347,23 @@ export default function Home() {
             />
 
             {/* Stats */}
-            <div className="bg-white rounded-lg p-4 border">
-              <h3 className="font-semibold mb-3">Quick Stats</h3>
+            <div className="bg-secondary-background rounded-base p-4 border-2 border-border shadow-shadow">
+              <h3 className="font-heading mb-3">Quick Stats</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Products Available</span>
-                  <span className="font-medium">{products.length}</span>
+                  <span className="font-heading">{products.length}</span>
                 </div>
                 {selectedProduct && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Outfits Generated</span>
-                      <span className="font-medium">{outfits.length}</span>
+                      <span className="font-heading">{outfits.length}</span>
                     </div>
                     {processingTime && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Response Time</span>
-                        <span className="font-medium text-green-600">
+                        <span className="font-heading text-main">
                           {processingTime}ms
                         </span>
                       </div>
@@ -370,9 +374,9 @@ export default function Home() {
             </div>
 
             {/* Info */}
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-              <h3 className="font-semibold text-blue-900 mb-2">How it Works</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+            <div className="bg-main/20 rounded-base p-4 border-2 border-border">
+              <h3 className="font-heading mb-2">How it Works</h3>
+              <ul className="text-sm space-y-1">
                 <li>1. Select a base product (top, bottom, etc.)</li>
                 <li>2. Adjust filters for occasion, season, budget</li>
                 <li>3. Get AI-matched complete outfits</li>
@@ -384,11 +388,11 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-12 py-6">
+      <footer className="bg-secondary-background border-t-2 border-border mt-12 py-6">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>AI-Powered Outfit Recommendation System</p>
+          <p className="font-heading">AI-Powered Outfit Recommendation System</p>
           <p className="mt-1">
-            Built with Next.js 14, TypeScript, and shadcn/ui
+            Built with Next.js 14, TypeScript, and Neobrutalism UI
           </p>
         </div>
       </footer>

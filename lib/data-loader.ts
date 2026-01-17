@@ -12,7 +12,12 @@ export function loadProducts(): Product[] {
   }
 
   const excelProducts = loadExcelProducts();
-  cachedProducts = excelProducts.map(normalizeProduct);
+  const normalizedProducts = excelProducts.map(normalizeProduct);
+
+  // Filter out products with no image or 0 price
+  cachedProducts = normalizedProducts.filter(
+    (product) => product.imageUrl && product.imageUrl.trim() !== '' && product.price > 0
+  );
 
   return cachedProducts;
 }

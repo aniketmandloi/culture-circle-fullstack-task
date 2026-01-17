@@ -29,20 +29,20 @@ export function OutfitCard({ outfit, index }: OutfitCardProps) {
   ];
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <CardHeader className="pb-3 bg-gradient-to-r from-gray-50 to-white">
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3 bg-main/10 border-b-2 border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-muted-foreground">
+            <span className="text-lg font-heading text-muted-foreground">
               #{index + 1}
             </span>
-            <h3 className="font-semibold text-lg">Complete Look</h3>
+            <h3 className="font-heading text-lg">Complete Look</h3>
           </div>
           <ScoreBadge score={outfit.matchScore} />
         </div>
         <div className="flex gap-2 flex-wrap mt-2">
           {outfit.suitableOccasions.slice(0, 3).map((occasion) => (
-            <Badge key={occasion} variant="outline" className="text-xs capitalize">
+            <Badge key={occasion} variant="neutral" className="text-xs capitalize">
               {occasion}
             </Badge>
           ))}
@@ -50,7 +50,7 @@ export function OutfitCard({ outfit, index }: OutfitCardProps) {
             .filter((s) => s !== 'all-season')
             .slice(0, 2)
             .map((season) => (
-              <Badge key={season} variant="secondary" className="text-xs capitalize">
+              <Badge key={season} variant="default" className="text-xs capitalize">
                 {season}
               </Badge>
             ))}
@@ -66,18 +66,18 @@ export function OutfitCard({ outfit, index }: OutfitCardProps) {
         </div>
 
         {/* Total Price */}
-        <div className="mt-6 flex justify-between items-center border-t pt-4">
+        <div className="mt-6 flex justify-between items-center border-t-2 border-border pt-4">
           <span className="text-sm text-muted-foreground">Total Outfit Price</span>
-          <span className="font-bold text-xl">
+          <span className="font-heading text-xl">
             ₹{outfit.totalPrice.toLocaleString('en-IN')}
           </span>
         </div>
 
         {/* Score Breakdown Toggle */}
         <Button
-          variant="ghost"
+          variant="neutral"
           size="sm"
-          className="w-full mt-2"
+          className="w-full mt-4"
           onClick={() => setShowBreakdown(!showBreakdown)}
         >
           {showBreakdown ? (
@@ -93,8 +93,8 @@ export function OutfitCard({ outfit, index }: OutfitCardProps) {
 
         {/* Score Breakdown */}
         {showBreakdown && (
-          <div className="mt-4 space-y-3 p-4 bg-gray-50 rounded-lg">
-            <h4 className="text-sm font-semibold mb-3">Match Score Breakdown</h4>
+          <div className="mt-4 space-y-3 p-4 bg-secondary-background rounded-base border-2 border-border">
+            <h4 className="text-sm font-heading mb-3">Match Score Breakdown</h4>
             <ScoreRow
               label="Color Harmony"
               score={outfit.scoreBreakdown.colorHarmony}
@@ -137,18 +137,12 @@ function ScoreRow({
   weight: string;
 }) {
   const percentage = Math.round(score * 100);
-  const colorClass =
-    percentage >= 80
-      ? '[&>div]:bg-green-500'
-      : percentage >= 60
-        ? '[&>div]:bg-yellow-500'
-        : '[&>div]:bg-orange-500';
 
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-muted-foreground w-24 shrink-0">{label}</span>
-      <Progress value={percentage} className={`flex-1 h-2 ${colorClass}`} />
-      <span className="text-xs font-medium w-12 text-right">{percentage}%</span>
+      <Progress value={percentage} className="flex-1 h-3" />
+      <span className="text-xs font-heading w-12 text-right">{percentage}%</span>
       <span className="text-xs text-muted-foreground w-10">({weight})</span>
     </div>
   );
