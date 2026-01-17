@@ -27,8 +27,8 @@ export function OutfitDisplay({
 
   if (outfits.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p className="text-lg">No outfit recommendations available</p>
+      <div className="text-center py-12 text-muted-foreground bg-secondary-background rounded-base border-2 border-border">
+        <p className="text-lg font-heading">No outfit recommendations available</p>
         <p className="text-sm mt-2">
           Try selecting a different product or adjusting filters
         </p>
@@ -40,7 +40,7 @@ export function OutfitDisplay({
     <div className="space-y-6">
       {processingTime !== undefined && (
         <p className="text-xs text-muted-foreground text-right">
-          Generated in {processingTime}ms
+          Generated in <span className="font-heading text-main">{processingTime}ms</span>
         </p>
       )}
       {outfits.map((outfit, index) => (
@@ -52,7 +52,7 @@ export function OutfitDisplay({
 
 function OutfitSkeleton() {
   return (
-    <div className="border rounded-lg p-6 space-y-4">
+    <div className="border-2 border-border rounded-base p-6 space-y-4 bg-secondary-background shadow-shadow">
       <div className="flex justify-between items-center">
         <Skeleton className="h-6 w-32" />
         <Skeleton className="h-6 w-24" />
@@ -70,7 +70,7 @@ function OutfitSkeleton() {
           </div>
         ))}
       </div>
-      <div className="flex justify-between pt-4 border-t">
+      <div className="flex justify-between pt-4 border-t-2 border-border">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-6 w-24" />
       </div>

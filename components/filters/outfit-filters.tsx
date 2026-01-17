@@ -54,7 +54,7 @@ export function OutfitFiltersForm({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Filters</CardTitle>
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <Button variant="neutral" size="sm" onClick={clearFilters}>
             <RotateCcw className="h-4 w-4 mr-1" />
             Reset
           </Button>
