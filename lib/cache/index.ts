@@ -1,4 +1,3 @@
-import { Product } from '@/types/product';
 import { Outfit } from '@/types/outfit';
 import { loadProducts } from '@/lib/data-loader';
 import { precomputeData, PrecomputedData } from './precompute';
@@ -67,4 +66,4 @@ export function clearCache(): void {
   outfitCache.clear();
 }
 
-export { PrecomputedData } from './precompute';
+export type { PrecomputedData } from './precompute';

@@ -111,7 +111,7 @@ function getCandidatePools(
   return pools;
 }
 
-function getNeededCategories(baseCategory: ProductCategory): ProductCategory[] {
+function getNeededCategories(_baseCategory: ProductCategory): ProductCategory[] {
   // Always need all categories for a complete outfit
   // But the base product fills one slot
   const all: ProductCategory[] = ['top', 'bottom', 'footwear', 'accessory'];

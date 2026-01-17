@@ -52,7 +52,7 @@ export function calculateColorHarmony(itemColors: Color[][]): number {
     harmonyScore = 0.9;
   } else {
     // Multiple chromatic colors - check harmony types
-    const uniqueChromatic = [...new Set(chromatic)];
+    const uniqueChromatic = Array.from(new Set(chromatic));
     const positions = uniqueChromatic
       .map((c) => COLOR_WHEEL[c])
       .filter((p) => p >= 0);

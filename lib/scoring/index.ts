@@ -1,7 +1,7 @@
 import { Product, Occasion, Season } from '@/types/product';
 import { ScoreBreakdown, OutfitFilters } from '@/types/outfit';
 import { calculateColorHarmony } from './color-harmony';
-import { calculateStyleCompatibility, getDominantStyle } from './style-compatibility';
+import { calculateStyleCompatibility } from './style-compatibility';
 
 const WEIGHTS = {
   colorHarmony: 0.3,
