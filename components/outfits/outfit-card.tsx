@@ -20,7 +20,7 @@ export function OutfitCard({ outfit, index }: OutfitCardProps) {
 
   const allItems = [
     { product: outfit.top, label: 'Top' },
-    { product: outfit.bottom, label: 'Bottom' },
+    ...(outfit.bottom ? [{ product: outfit.bottom, label: 'Bottom' }] : []),
     { product: outfit.footwear, label: 'Footwear' },
     ...outfit.accessories.map((acc, i) => ({
       product: acc,

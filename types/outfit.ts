@@ -11,7 +11,7 @@ export interface ScoreBreakdown {
 export interface Outfit {
   id: string;
   top: Product;
-  bottom: Product;
+  bottom?: Product;
   footwear: Product;
   accessories: Product[];
   matchScore: number;

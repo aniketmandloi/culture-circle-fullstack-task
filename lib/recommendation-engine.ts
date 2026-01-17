@@ -186,15 +186,17 @@ function generateAndScoreOutfits(
   const footwear = baseCategory === 'footwear' ? [baseProduct] : candidates.footwear;
   const accessories = baseCategory === 'accessory' ? [baseProduct] : candidates.accessories;
 
-  // Ensure we have items in each category
-  if (tops.length === 0 || bottoms.length === 0 || footwear.length === 0) {
-    console.warn('Insufficient products in one or more categories');
+  // Ensure we have items in essential categories (bottoms are optional)
+  if (tops.length === 0 || footwear.length === 0) {
+    console.warn('Insufficient products in essential categories (tops or footwear)');
     return [];
   }
 
+  const hasBottoms = bottoms.length > 0;
+
   // Generate combinations using smart sampling
   const maxTops = Math.min(tops.length, 5);
-  const maxBottoms = Math.min(bottoms.length, 8);
+  const maxBottoms = hasBottoms ? Math.min(bottoms.length, 8) : 1;
   const maxFootwear = Math.min(footwear.length, 6);
   const maxAccessories = Math.min(accessories.length, 4);
 
@@ -203,7 +205,7 @@ function generateAndScoreOutfits(
       for (let fi = 0; fi < maxFootwear && outfits.length < maxOutfits; fi++) {
         for (let ai = 0; ai < maxAccessories && outfits.length < maxOutfits; ai++) {
           const top = tops[ti];
-          const bottom = bottoms[bi];
+          const bottom = hasBottoms ? bottoms[bi] : undefined;
           const foot = footwear[fi];
           const acc = accessories[ai] ? [accessories[ai]] : [];
 
@@ -213,12 +215,12 @@ function generateAndScoreOutfits(
           }
 
           // Create combination key for deduplication
-          const combKey = `${top.id}-${bottom.id}-${foot.id}-${acc.map(a => a.id).join(',')}`;
+          const combKey = `${top.id}-${bottom?.id || 'no-bottom'}-${foot.id}-${acc.map(a => a.id).join(',')}`;
           if (seenCombinations.has(combKey)) continue;
           seenCombinations.add(combKey);
 
           // Calculate outfit score
-          const items = [top, bottom, foot, ...acc];
+          const items = bottom ? [top, bottom, foot, ...acc] : [top, foot, ...acc];
           const { matchScore, scoreBreakdown } = calculateMatchScore(items, filters);
 
           // Only include outfits with reasonable scores
@@ -262,7 +264,7 @@ function ensureDiversity(outfits: Outfit[]): Outfit[] {
 
   for (const outfit of outfits) {
     // Skip if too similar to already selected outfits
-    const bottomId = outfit.bottom.id;
+    const bottomId = outfit.bottom?.id || 'no-bottom';
     const footwearId = outfit.footwear.id;
 
     // Allow some repetition but not too much
