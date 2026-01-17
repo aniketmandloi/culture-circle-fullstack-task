@@ -1,7 +1,6 @@
 import * as XLSX from 'xlsx';
 import { Product, RawProduct, ProductCategory, Gender, Style, Season, Occasion, PriceRange } from '@/types/product';
 import { extractColors } from './color-extractor';
-import { mockBottoms, mockFootwear, mockAccessories } from '@/data/mock-products';
 import path from 'path';
 import fs from 'fs';
 
@@ -13,15 +12,7 @@ export function loadProducts(): Product[] {
   }
 
   const excelProducts = loadExcelProducts();
-  const normalizedProducts = excelProducts.map(normalizeProduct);
-
-  // Combine with mock products
-  cachedProducts = [
-    ...normalizedProducts,
-    ...mockBottoms,
-    ...mockFootwear,
-    ...mockAccessories,
-  ];
+  cachedProducts = excelProducts.map(normalizeProduct);
 
   return cachedProducts;
 }
