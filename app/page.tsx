@@ -19,7 +19,18 @@ import {
 } from '@/components/ui/select';
 import { Product, ProductCategory } from '@/types/product';
 import { OutfitFilters, OutfitRequest } from '@/types/outfit';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from '@/components/ui/pagination';
 import { Shirt, ArrowRight, Sparkles } from 'lucide-react';
+
+const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -27,6 +38,8 @@ export default function Home() {
     'top'
   );
   const [outfitFilters, setOutfitFilters] = useState<OutfitFilters>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   const { products, isLoading: productsLoading } = useProducts(
     categoryFilter === 'all' ? undefined : categoryFilter
@@ -37,6 +50,24 @@ export default function Home() {
     if (categoryFilter === 'all') return products;
     return products.filter((p) => p.category === categoryFilter);
   }, [products, categoryFilter]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(selectableProducts.length / itemsPerPage);
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return selectableProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [selectableProducts, currentPage, itemsPerPage]);
+
+  // Reset page when category or items per page changes
+  const handleCategoryChange = (value: ProductCategory | 'all') => {
+    setCategoryFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
+  };
 
   // Build recommendation request
   const recommendationRequest: OutfitRequest | null = selectedProduct
@@ -86,23 +117,38 @@ export default function Home() {
                     Choose a base product to build your outfit around
                   </p>
                 </div>
-                <Select
-                  value={categoryFilter}
-                  onValueChange={(v) =>
-                    setCategoryFilter(v as ProductCategory | 'all')
-                  }
-                >
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="top">Tops</SelectItem>
-                    <SelectItem value="bottom">Bottoms</SelectItem>
-                    <SelectItem value="footwear">Footwear</SelectItem>
-                    <SelectItem value="accessory">Accessories</SelectItem>
-                    <SelectItem value="all">All Products</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={categoryFilter}
+                    onValueChange={(v) => handleCategoryChange(v as ProductCategory | 'all')}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="top">Tops</SelectItem>
+                      <SelectItem value="bottom">Bottoms</SelectItem>
+                      <SelectItem value="footwear">Footwear</SelectItem>
+                      <SelectItem value="accessory">Accessories</SelectItem>
+                      <SelectItem value="all">All Products</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={itemsPerPage.toString()}
+                    onValueChange={handleItemsPerPageChange}
+                  >
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ITEMS_PER_PAGE_OPTIONS.map((option) => (
+                        <SelectItem key={option} value={option.toString()}>
+                          {option} / page
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {productsLoading ? (
@@ -117,16 +163,89 @@ export default function Home() {
                 </div>
               ) : (
                 <ProductGrid
-                  products={selectableProducts.slice(0, 12)}
+                  products={paginatedProducts}
                   selectedId={selectedProduct?.id}
                   onSelect={setSelectedProduct}
                 />
               )}
 
-              {selectableProducts.length > 12 && (
-                <p className="text-center text-sm text-muted-foreground mt-4">
-                  Showing 12 of {selectableProducts.length} products
-                </p>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="mt-6 space-y-3">
+                  <p className="text-center text-sm text-muted-foreground">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, selectableProducts.length)} of {selectableProducts.length} products
+                  </p>
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+
+                      {/* First page */}
+                      <PaginationItem>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(1)}
+                          isActive={currentPage === 1}
+                          className="cursor-pointer"
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+
+                      {/* Ellipsis after first page */}
+                      {currentPage > 3 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+
+                      {/* Pages around current */}
+                      {Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter((page) => page !== 1 && page !== totalPages && Math.abs(page - currentPage) <= 1)
+                        .map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+
+                      {/* Ellipsis before last page */}
+                      {currentPage < totalPages - 2 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+
+                      {/* Last page */}
+                      {totalPages > 1 && (
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(totalPages)}
+                            isActive={currentPage === totalPages}
+                            className="cursor-pointer"
+                          >
+                            {totalPages}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
               )}
             </section>
 
